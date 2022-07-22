@@ -20,7 +20,6 @@ This BepInEx plugin for the game As Dusk Falls features:
 ## Known Issues
 Please report any issues you see.
 
-- Main Menu is anchored to the left.
 
 ## Screenshots
 | ![ezgif-2-f2f4b5f8b5](https://user-images.githubusercontent.com/695941/179136231-ef35cf6d-99cf-46f4-8ff9-e6f34b9a6333.gif) |

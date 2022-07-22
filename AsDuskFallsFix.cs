@@ -9,6 +9,7 @@ using UnityEngine.UI;
 
 using InteriorNight.MenuSystem;
 using InteriorNight;
+using System;
 
 namespace AsDuskFallsFix
 {
@@ -120,12 +121,12 @@ namespace AsDuskFallsFix
             }
 
             // Update target aspect ratio
-            [HarmonyPatch(typeof(CameraAspectRatioFitter), nameof(CameraAspectRatioFitter.Update))]
+            [HarmonyPatch(typeof(CameraAspectRatioFitter), nameof(CameraAspectRatioFitter.Awake))]
             [HarmonyPrefix]
             public static bool StopAspect(CameraAspectRatioFitter __instance)
             {
-                __instance.wantedAspectRatio = (float)Screen.width / Screen.height;
-
+                __instance.wantedAspectRatio = (float)fDesiredResolutionX.Value / fDesiredResolutionY.Value;
+                Log.LogInfo($"AspectRatioFitter wantedAspectRatio set to {__instance.wantedAspectRatio}.");
                 return true;
             }
 
@@ -136,6 +137,7 @@ namespace AsDuskFallsFix
             public static bool Prefix(LocalClient __instance)
             {
                 GlobalSettings.TARGET_ASPECT_RATIO = (float)Screen.width / Screen.height;
+                Log.LogInfo($"Cursor clamp adjusted.");
                 return true;
             }
             [HarmonyPatch(typeof(LocalClient), nameof(LocalClient.ClampCursorPos))]
@@ -158,16 +160,19 @@ namespace AsDuskFallsFix
                 {
                     QualitySettings.vSyncCount = 1;
                     Application.targetFrameRate = 500;
+                    Log.LogInfo($"Vsync set to {QualitySettings.vSyncCount}. targetFrameRate set to {Application.targetFrameRate}.");
                 }
 
                 if (iAntialiasing.Value > 0)
                 {
                     QualitySettings.antiAliasing = iAntialiasing.Value;
+                    Log.LogInfo($"Antialiasing set to {iAntialiasing.Value}.");
                 }
                 if (iAnisotropicFiltering.Value > 0)
                 {
                     QualitySettings.anisotropicFiltering = AnisotropicFiltering.ForceEnable;
                     Texture.SetGlobalAnisotropicFilteringLimits(iAnisotropicFiltering.Value, iAnisotropicFiltering.Value);
+                    Log.LogInfo($"Anisotropic filtering force enabled. Value = {iAnisotropicFiltering.Value}.");
                 }
             }
         }
@@ -190,6 +195,24 @@ namespace AsDuskFallsFix
                     __instance.m_ScreenMatchMode = CanvasScaler.ScreenMatchMode.Expand;
                 }
             }
+
+            // Set screen match mode when object has canvasscaler enabled
+            [HarmonyPatch(typeof(MainMenu), nameof(MainMenu.OnEnable))]
+            [HarmonyPostfix]
+            public static void FixMainMenu(MainMenu __instance)
+            {
+                if (NewAspectRatio > DefaultAspectRatio)
+                {
+                    GameObject MainMenu = GameObject.Find("Managers/MenuManager/MenuRoot");
+                    var oldxPos = MainMenu.transform.position.x;
+                    var newxPos = -(float)16/9;
+                    Vector3 newPos = MainMenu.transform.position;
+                    newPos.x = newxPos;
+                    MainMenu.transform.position = newPos;
+                    Log.LogInfo($"Centered main menu.");
+                }
+               
+            }
         }
 
         [HarmonyPatch]
@@ -201,12 +224,14 @@ namespace AsDuskFallsFix
             public static void SkipSplash(SplashScreenManager __instance)
             {
                 SplashScreenManager.s_splashScreensDone = true;
+                Log.LogInfo($"Splashscreens skipped.");
             }
 
             [HarmonyPatch(typeof(SplashScreenManager.SplashScreen), nameof(SplashScreenManager.SplashScreen.SetupVideo))]
             [HarmonyPrefix]
-            public static bool XboxSound(SplashScreenManager.SplashScreen __instance)
+            public static bool SkipSplashVideo(SplashScreenManager.SplashScreen __instance)
             {
+                Log.LogInfo($"Startup video skipped.");
                 return false;
             }
 
