@@ -21,7 +21,7 @@ This BepInEx plugin for the game As Dusk Falls features:
 Please report any issues you see.
 
 ## Screenshots
-| ![ezgif-2-f2f4b5f8b5](https://user-images.githubusercontent.com/695941/179136231-ef35cf6d-99cf-46f4-8ff9-e6f34b9a6333.gif) |
+| ![ezgif-3-c1dc1b45ab](https://user-images.githubusercontent.com/695941/180367261-b1c983ef-9208-4763-806f-1d0deaf39649.gif) |
 |:--:|
 | Ultrawide pillarbox removal. | 
 
