@@ -137,7 +137,7 @@ namespace AsDuskFallsFix
             public static bool Prefix(LocalClient __instance)
             {
                 GlobalSettings.TARGET_ASPECT_RATIO = (float)Screen.width / Screen.height;
-                Log.LogInfo($"Cursor clamp adjusted.");
+                //Log.LogInfo($"Cursor clamp adjusted.");
                 return true;
             }
             [HarmonyPatch(typeof(LocalClient), nameof(LocalClient.ClampCursorPos))]
