@@ -196,7 +196,7 @@ namespace AsDuskFallsFix
                 }
             }
 
-            // Set screen match mode when object has canvasscaler enabled
+            // Center main menu
             [HarmonyPatch(typeof(MainMenu), nameof(MainMenu.OnEnable))]
             [HarmonyPostfix]
             public static void FixMainMenu(MainMenu __instance)
