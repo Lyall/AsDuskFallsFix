@@ -9,7 +9,7 @@ This BepInEx plugin for the game As Dusk Falls features:
 - Graphical tweaks.
 
 ### Quick Ultrawide Fix
-= If you would like an alternative solution that fixes ultrawide support then I highly recommend using [@RoseTheFlower](https://github.com/RoseTheFlower)'s fix which you can find [here](https://github.com/RoseTheFlower/UltrawideIndex/releases/tag/asduskfalls).
+- If you would like an alternative solution that fixes ultrawide support then I highly recommend using [@RoseTheFlower](https://github.com/RoseTheFlower)'s fix which you can find [here](https://github.com/RoseTheFlower/UltrawideIndex/releases/tag/asduskfalls).
 
 ## Installation
 - Grab the latest release of AsDuskFallsFix from [here.](https://github.com/Lyall/AsDuskFallsFix/releases)
