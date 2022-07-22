@@ -7,6 +7,9 @@ using HarmonyLib;
 using UnityEngine;
 using UnityEngine.UI;
 
+using InteriorNight.MenuSystem;
+using InteriorNight;
+
 namespace AsDuskFallsFix
 {
     [BepInPlugin(PluginInfo.PLUGIN_GUID, PluginInfo.PLUGIN_NAME, PluginInfo.PLUGIN_VERSION)]
@@ -99,13 +102,12 @@ namespace AsDuskFallsFix
         [HarmonyPatch]
         public class CustomResolutionPatch
         {
-
             // Add custom resolution
-            [HarmonyPatch(typeof(InteriorNight.MenuSystem.GraphicsSettingsController), nameof(InteriorNight.MenuSystem.GraphicsSettingsController.GetBestAlternativeResolution))]
+            [HarmonyPatch(typeof(GraphicsSettingsController), nameof(GraphicsSettingsController.GetBestAlternativeResolution))]
             [HarmonyPrefix]
-            public static bool CustomResList(InteriorNight.MenuSystem.GraphicsSettingsController __instance, int __result, ref Il2CppSystem.Collections.Generic.List<InteriorNight.INResolution> __0)
+            public static bool CustomResList(GraphicsSettingsController __instance, int __result, ref Il2CppSystem.Collections.Generic.List<INResolution> __0)
             {
-                InteriorNight.INResolution customResolution = new InteriorNight.INResolution
+                INResolution customResolution = new INResolution
                 {
                     width = (int)fDesiredResolutionX.Value,
                     height = (int)fDesiredResolutionY.Value,
@@ -118,9 +120,9 @@ namespace AsDuskFallsFix
             }
 
             // Update target aspect ratio
-            [HarmonyPatch(typeof(InteriorNight.CameraAspectRatioFitter), nameof(InteriorNight.CameraAspectRatioFitter.Update))]
+            [HarmonyPatch(typeof(CameraAspectRatioFitter), nameof(CameraAspectRatioFitter.Update))]
             [HarmonyPrefix]
-            public static bool StopAspect(InteriorNight.CameraAspectRatioFitter __instance)
+            public static bool StopAspect(CameraAspectRatioFitter __instance)
             {
                 __instance.wantedAspectRatio = (float)Screen.width / Screen.height;
 
@@ -129,18 +131,18 @@ namespace AsDuskFallsFix
 
             // Cursor Clamp
             // This is so janky lmao
-            [HarmonyPatch(typeof(InteriorNight.LocalClient), nameof(InteriorNight.LocalClient.ClampCursorPos))]
+            [HarmonyPatch(typeof(LocalClient), nameof(LocalClient.ClampCursorPos))]
             [HarmonyPrefix]
-            public static bool Prefix(InteriorNight.LocalClient __instance)
+            public static bool Prefix(LocalClient __instance)
             {
-                InteriorNight.GlobalSettings.TARGET_ASPECT_RATIO = (float)Screen.width / Screen.height;
+                GlobalSettings.TARGET_ASPECT_RATIO = (float)Screen.width / Screen.height;
                 return true;
             }
-            [HarmonyPatch(typeof(InteriorNight.LocalClient), nameof(InteriorNight.LocalClient.ClampCursorPos))]
+            [HarmonyPatch(typeof(LocalClient), nameof(LocalClient.ClampCursorPos))]
             [HarmonyPostfix]
-            public static void Postfix(InteriorNight.LocalClient __instance)
+            public static void Postfix(LocalClient __instance)
             {
-                InteriorNight.GlobalSettings.TARGET_ASPECT_RATIO = (float)16/9;
+                GlobalSettings.TARGET_ASPECT_RATIO = (float)16/9;
             }
 
         }
@@ -148,7 +150,7 @@ namespace AsDuskFallsFix
         [HarmonyPatch]
         public class SettingsPatch
         {
-            [HarmonyPatch(typeof(InteriorNight.QualityManager), nameof(InteriorNight.QualityManager.SetResolutionAndDisplayMode))]
+            [HarmonyPatch(typeof(QualityManager), nameof(QualityManager.SetResolutionAndDisplayMode))]
             [HarmonyPostfix]
             public static void SettingsChange()
             {
@@ -194,16 +196,16 @@ namespace AsDuskFallsFix
         public class IntroSkipPatch
         {
 
-            [HarmonyPatch(typeof(InteriorNight.SplashScreenManager), nameof(InteriorNight.SplashScreenManager.Start))]
+            [HarmonyPatch(typeof(SplashScreenManager), nameof(SplashScreenManager.Start))]
             [HarmonyPostfix]
-            public static void SkipSplash(InteriorNight.SplashScreenManager __instance)
+            public static void SkipSplash(SplashScreenManager __instance)
             {
-                InteriorNight.SplashScreenManager.s_splashScreensDone = true;
+                SplashScreenManager.s_splashScreensDone = true;
             }
 
-            [HarmonyPatch(typeof(InteriorNight.SplashScreenManager.SplashScreen), nameof(InteriorNight.SplashScreenManager.SplashScreen.SetupVideo))]
+            [HarmonyPatch(typeof(SplashScreenManager.SplashScreen), nameof(SplashScreenManager.SplashScreen.SetupVideo))]
             [HarmonyPrefix]
-            public static bool XboxSound(InteriorNight.SplashScreenManager.SplashScreen __instance)
+            public static bool XboxSound(SplashScreenManager.SplashScreen __instance)
             {
                 return false;
             }
