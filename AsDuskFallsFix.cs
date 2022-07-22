@@ -10,7 +10,7 @@ using UnityEngine.UI;
 namespace AsDuskFallsFix
 {
     [BepInPlugin(PluginInfo.PLUGIN_GUID, PluginInfo.PLUGIN_NAME, PluginInfo.PLUGIN_VERSION)]
-    public class ASF : BasePlugin
+    public class ADF : BasePlugin
     {
         internal static new ManualLogSource Log;
 
@@ -99,6 +99,7 @@ namespace AsDuskFallsFix
         [HarmonyPatch]
         public class CustomResolutionPatch
         {
+
             // Add custom resolution
             [HarmonyPatch(typeof(InteriorNight.MenuSystem.GraphicsSettingsController), nameof(InteriorNight.MenuSystem.GraphicsSettingsController.GetBestAlternativeResolution))]
             [HarmonyPrefix]
@@ -123,10 +124,25 @@ namespace AsDuskFallsFix
             {
                 __instance.wantedAspectRatio = (float)Screen.width / Screen.height;
 
-                // Cursor Clamp
+                return true;
+            }
+
+            // Cursor Clamp
+            // This is so janky lmao
+            [HarmonyPatch(typeof(InteriorNight.LocalClient), nameof(InteriorNight.LocalClient.ClampCursorPos))]
+            [HarmonyPrefix]
+            public static bool Prefix(InteriorNight.LocalClient __instance)
+            {
                 InteriorNight.GlobalSettings.TARGET_ASPECT_RATIO = (float)Screen.width / Screen.height;
                 return true;
             }
+            [HarmonyPatch(typeof(InteriorNight.LocalClient), nameof(InteriorNight.LocalClient.ClampCursorPos))]
+            [HarmonyPostfix]
+            public static void Postfix(InteriorNight.LocalClient __instance)
+            {
+                InteriorNight.GlobalSettings.TARGET_ASPECT_RATIO = (float)16/9;
+            }
+
         }
 
         [HarmonyPatch]
@@ -138,9 +154,10 @@ namespace AsDuskFallsFix
             {
                 if (bUncapFPS.Value)
                 {
-                    //InteriorNight.QualityManager.desiredFrameRate = 999;
                     QualitySettings.vSyncCount = 1;
+                    Application.targetFrameRate = 500;
                 }
+
                 if (iAntialiasing.Value > 0)
                 {
                     QualitySettings.antiAliasing = iAntialiasing.Value;
@@ -152,7 +169,6 @@ namespace AsDuskFallsFix
                 }
             }
         }
-
 
         [HarmonyPatch]
         public class UltrawidePatch
@@ -171,7 +187,7 @@ namespace AsDuskFallsFix
                 {
                     __instance.m_ScreenMatchMode = CanvasScaler.ScreenMatchMode.Expand;
                 }
-            }  
+            }
         }
 
         [HarmonyPatch]
