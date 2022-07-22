@@ -152,6 +152,7 @@ namespace AsDuskFallsFix
         [HarmonyPatch]
         public class SettingsPatch
         {
+            // Override game settings
             [HarmonyPatch(typeof(QualityManager), nameof(QualityManager.SetResolutionAndDisplayMode))]
             [HarmonyPostfix]
             public static void SettingsChange()
@@ -218,7 +219,7 @@ namespace AsDuskFallsFix
         [HarmonyPatch]
         public class IntroSkipPatch
         {
-
+            // Skip splashscreens
             [HarmonyPatch(typeof(SplashScreenManager), nameof(SplashScreenManager.Start))]
             [HarmonyPostfix]
             public static void SkipSplash(SplashScreenManager __instance)
@@ -227,6 +228,7 @@ namespace AsDuskFallsFix
                 Log.LogInfo($"Splashscreens skipped.");
             }
 
+            // Skip splash video
             [HarmonyPatch(typeof(SplashScreenManager.SplashScreen), nameof(SplashScreenManager.SplashScreen.SetupVideo))]
             [HarmonyPrefix]
             public static bool SkipSplashVideo(SplashScreenManager.SplashScreen __instance)
