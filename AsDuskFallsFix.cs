@@ -9,7 +9,6 @@ using UnityEngine.UI;
 
 using InteriorNight.MenuSystem;
 using InteriorNight;
-using System;
 
 namespace AsDuskFallsFix
 {
